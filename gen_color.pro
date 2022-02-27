@@ -19,6 +19,7 @@ HEADERS += \
     colorengine.h \
     gencolor.h \
     mainwindow.h \
+    minmax.h \
     sliderparam.h
 
 # Default rules for deployment.

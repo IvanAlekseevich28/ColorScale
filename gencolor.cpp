@@ -13,10 +13,7 @@
 QGenColor::QGenColor(QWidget *parent, Draw::ColorEngine &eng) :
     QOpenGLWidget(parent), m_eng(eng)
 {
-    auto specLen = m_eng.params().specLen;
-    m_oneClrPixLen = SCALE_WIDTH / specLen;
-
-    QOpenGLWidget::setFixedSize(m_oneClrPixLen*specLen, SCALE_HEIGHT);
+    QOpenGLWidget::setFixedSize(SCALE_WIDTH, SCALE_HEIGHT);
     update();
 }
 
@@ -44,7 +41,7 @@ void QGenColor::drawOneLine(const QColor &clr, const unsigned index)
     p.setPen(clr);
     p.setBrush(QBrush(clr));
 //    p.drawText()
-    p.drawRect(index*m_oneClrPixLen, 0, m_oneClrPixLen, SCALE_HEIGHT);
+    p.drawRect(index*oneClrPixLen(), 0, oneClrPixLen(), SCALE_HEIGHT);
 }
 
 void QGenColor::drawOneLineWithText(const std::pair<Draw::TIntNum, QColor> &parClr, const unsigned index)
@@ -52,7 +49,7 @@ void QGenColor::drawOneLineWithText(const std::pair<Draw::TIntNum, QColor> &parC
     QPainter p(this);
     p.setPen(parClr.second);
     p.setBrush(QBrush(parClr.second));
-    const int w = m_oneClrPixLen;
+    const int w = oneClrPixLen();
     const int x = index*w;
     const int numsH = 30;
     const int scaleH = SCALE_HEIGHT - numsH;
@@ -62,4 +59,10 @@ void QGenColor::drawOneLineWithText(const std::pair<Draw::TIntNum, QColor> &parC
 
     p.setPen(Qt::white);
     p.drawText(x, SCALE_HEIGHT-8, QString::fromStdString(strNum));
+}
+
+unsigned QGenColor::oneClrPixLen() const
+{
+    auto specLen = m_eng.params().specLen;
+    return SCALE_WIDTH / specLen;
 }

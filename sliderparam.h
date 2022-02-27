@@ -5,14 +5,7 @@
 #include <QObject>
 #include <QLineEdit>
 #include <QSlider>
-
-struct MinMax
-{
-    int min;
-    int max;
-    MinMax(int max) : min(0), max(max) {}
-    MinMax(int min, int max) : min(min), max(max) {}
-};
+#include "minmax.h"
 
 class QSliderParam : public QHBoxLayout
 {

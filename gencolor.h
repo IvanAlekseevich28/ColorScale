@@ -11,6 +11,8 @@ public:
     std::vector<QColor> genSpec()const;
     std::map<unsigned, QColor> genLogScale(const unsigned maxVal)const;
 
+    unsigned oneClrPixLen() const;
+
 protected:
     virtual void initializeGL();
     virtual void resizeGL(int nWidth, int nHeight);
@@ -20,5 +22,4 @@ protected:
 
 private:
     Draw::ColorEngine& m_eng;
-    unsigned m_oneClrPixLen;
 };

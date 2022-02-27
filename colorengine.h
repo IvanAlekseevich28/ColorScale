@@ -4,6 +4,7 @@
 #include <map>
 #include <QColor>
 #include <string>
+#include "minmax.h"
 
 namespace Draw
 {
@@ -13,8 +14,8 @@ typedef double TFltNum;
 
 struct ClrEngParams
 {
-    int minS = 30;
-    int minL = 30;
+    MinMax S = MinMax(30,100);
+    MinMax L = MinMax(30,100);
     TIntNum specLen = 16;
     TIntNum maxValue = 0xFFFFFFF8;
 };
@@ -37,9 +38,9 @@ public:
 
     void setMaxValue(const TIntNum &newMaxValue);
 
-    void setMinS(int newMinS);
+    void setS(MinMax newS);
 
-    void setMinL(int newMinL);
+    void setL(MinMax newL);
 
     void setParams(const ClrEngParams &newParams);
 

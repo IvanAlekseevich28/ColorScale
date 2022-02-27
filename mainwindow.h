@@ -23,6 +23,9 @@ private slots:
     void sliderChanged_green(int green);
     void sliderChanged_blue(int blue);
 
+    void sliderChanged_power2(int pow2);
+    void sliderChanged_specLen(int len);
+
 private:
     std::shared_ptr<Draw::ColorEngine> m_clrEng;
     QGenColor* m_pGenClr;

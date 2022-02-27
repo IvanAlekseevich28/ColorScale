@@ -3,7 +3,9 @@
 #include <sstream>
 
 
+#define MIN_HSL_SL 0
 #define MAX_HSL_SL 100
+
 #define VAL_k 1000
 #define VAL_M 1000000
 #define VAL_G 1000000000
@@ -43,11 +45,13 @@ QColor ColorEngine::getBaseColor() const
 void ColorEngine::setSpecLen(const TIntNum &newSpecLen)
 {
     m_params.specLen = newSpecLen;
+    recalcLogScale();
 }
 
 void ColorEngine::setMaxValue(const TIntNum &newMaxValue)
 {
     m_params.maxValue = newMaxValue;
+    recalcLogScale();
 }
 
 void ColorEngine::recalcLogScale()
@@ -58,10 +62,10 @@ void ColorEngine::recalcLogScale()
 std::vector<QColor> ColorEngine::genSpec() const
 {
     std::vector<QColor> spec;
-    int S(m_params.minL);
-    int L(MAX_HSL_SL);
-    const unsigned stepL = (MAX_HSL_SL - m_params.minL) / m_params.specLen;
-    const unsigned stepS = (MAX_HSL_SL - m_params.minS) / m_params.specLen;
+    int S(m_params.S.min);
+    int L(m_params.L.max);
+    const unsigned stepL = (m_params.L.max - m_params.L.min) / m_params.specLen;
+    const unsigned stepS = (m_params.S.max - m_params.S.min) / m_params.specLen;
     for (unsigned i = 0; i < m_params.specLen; i++)
     {
         QColor clr = QColor::fromHsl(m_baseH,S,L);
@@ -133,18 +137,21 @@ const std::map<TIntNum, QColor> &ColorEngine::logScale() const
 void ColorEngine::setParams(const ClrEngParams &newParams)
 {
     m_params = newParams;
-    m_params.minL = correctSLvalues(newParams.minL);
-    m_params.minS = correctSLvalues(newParams.minS);
+    m_params.L.cut(MIN_HSL_SL, MAX_HSL_SL);
+    m_params.S.cut(MIN_HSL_SL, MAX_HSL_SL);
+    recalcLogScale();
 }
 
-void ColorEngine::setMinL(int newMinL)
+void ColorEngine::setS(MinMax newS)
 {
-    m_params.minL = correctSLvalues(newMinL);
+    m_params.S = newS;
+    m_params.S.cut(MIN_HSL_SL, MAX_HSL_SL);
 }
 
-void ColorEngine::setMinS(int newMinS)
+void ColorEngine::setL(MinMax newL)
 {
-    m_params.minS = correctSLvalues(newMinS);
+    m_params.L = newL;
+    m_params.L.cut(MIN_HSL_SL, MAX_HSL_SL);
 }
 
 }

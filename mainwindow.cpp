@@ -10,9 +10,9 @@ MainWindow::MainWindow(QWidget *parent)
     m_pGenClr = new QGenColor(this, *m_clrEng);
 
     auto pLayoutMain = new QVBoxLayout(this);
-    auto pLayoutParams = new QHBoxLayout(this);
     pLayoutMain->addWidget(m_pGenClr);
 
+    auto pLayoutRGB = new QHBoxLayout(this);
     auto pSlider_red    = new QSliderParam(this, "   Red:", MinMax(255), 0);
     auto pSlider_green  = new QSliderParam(this, " Green:", MinMax(255), 34);
     auto pSlider_blue   = new QSliderParam(this, "  Blue:", MinMax(255), 255);
@@ -21,11 +21,23 @@ MainWindow::MainWindow(QWidget *parent)
     connect(pSlider_green, SIGNAL(newValue(int)), this, SLOT(sliderChanged_green(int)));
     connect(pSlider_blue, SIGNAL(newValue(int)), this, SLOT(sliderChanged_blue(int)));
 
-    pLayoutParams->addLayout(pSlider_red);
-    pLayoutParams->addLayout(pSlider_green);
-    pLayoutParams->addLayout(pSlider_blue);
+    pLayoutRGB->addLayout(pSlider_red);
+    pLayoutRGB->addLayout(pSlider_green);
+    pLayoutRGB->addLayout(pSlider_blue);
 
-    pLayoutMain->addLayout(pLayoutParams);
+
+    auto pLayoutCount = new QHBoxLayout(this);
+    auto pSlider_pow    = new QSliderParam(this, "     Max 2 Power:", MinMax(8, 31), 31);
+    auto pSlider_len  = new QSliderParam(this, " Spectrum lenght:", MinMax(2, 32), 16);
+
+    connect(pSlider_pow, SIGNAL(newValue(int)), this, SLOT(sliderChanged_power2(int)));
+    connect(pSlider_len, SIGNAL(newValue(int)), this, SLOT(sliderChanged_specLen(int)));
+
+    pLayoutCount->addLayout(pSlider_pow);
+    pLayoutCount->addLayout(pSlider_len);
+
+    pLayoutMain->addLayout(pLayoutRGB);
+    pLayoutMain->addLayout(pLayoutCount);
 
     QWidget *pWindow = new QWidget(this);
     pWindow->setLayout(pLayoutMain);
@@ -58,6 +70,19 @@ void MainWindow::sliderChanged_blue(int blue)
     auto clr = m_clrEng->getBaseColor();
     clr.setBlue(blue % 256);
     m_clrEng->setBaseColor(clr);
+    m_pGenClr->update();
+}
+
+void MainWindow::sliderChanged_power2(int pow2)
+{
+    int maxValue = 1 << pow2;
+    m_clrEng->setMaxValue(maxValue);
+    m_pGenClr->update();
+}
+
+void MainWindow::sliderChanged_specLen(int len)
+{
+    m_clrEng->setSpecLen(len);
     m_pGenClr->update();
 }
 
