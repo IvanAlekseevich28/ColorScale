@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include <QLayout>
 #include <QGridLayout>
-#include "range.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -28,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     auto pLayoutCount = new QHBoxLayout(this);
-    auto pSlider_pow    = new QSliderParam(this, "     Max 2 Power:", MinMax(8, 31, 0), 31);
+    auto pSlider_pow  = new QSliderParam(this, " Max 2 Power:", MinMax(8, 31, 0), 31);
     auto pSlider_len  = new QSliderParam(this, " Spectrum lenght:", MinMax(2, 32, 0), 16);
 
     connect(pSlider_pow, SIGNAL(newValue(int)), this, SLOT(sliderChanged_power2(int)));
@@ -37,10 +36,19 @@ MainWindow::MainWindow(QWidget *parent)
     pLayoutCount->addLayout(pSlider_pow);
     pLayoutCount->addLayout(pSlider_len);
 
-    // TODO
-    auto pLayoutSL = new QHBoxLayout(this);
+
+    auto pLayoutSV = new QHBoxLayout(this);
+    auto pSlider_hsv_V_min = new QSliderParam(this, " HSV Value (min):", MinMax(64, 255, 0), 255);
+    auto pSlider_hsv_S_max = new QSliderParam(this, " HSV Saturation (max):", MinMax(16, 255, 0), 255);
+
+    connect(pSlider_hsv_V_min, SIGNAL(newValue(int)), this, SLOT(sliderChanged_HSV_V_min(int)));
+    connect(pSlider_hsv_S_max, SIGNAL(newValue(int)), this, SLOT(sliderChanged_HSV_S_max(int)));
+
+    pLayoutSV->addLayout(pSlider_hsv_S_max);
+    pLayoutSV->addLayout(pSlider_hsv_V_min);
 
     pLayoutMain->addLayout(pLayoutRGB);
+    pLayoutMain->addLayout(pLayoutSV);
     pLayoutMain->addLayout(pLayoutCount);
 
     QWidget *pWindow = new QWidget(this);
@@ -87,6 +95,22 @@ void MainWindow::sliderChanged_power2(int pow2)
 void MainWindow::sliderChanged_specLen(int len)
 {
     m_clrEng->setSpecLen(len);
+    m_pGenClr->update();
+}
+
+void MainWindow::sliderChanged_HSV_S_max(int maxS)
+{
+    auto params = m_clrEng->params();
+    params.S.max = maxS;
+    m_clrEng->setParams(params);
+    m_pGenClr->update();
+}
+
+void MainWindow::sliderChanged_HSV_V_min(int minV)
+{
+    auto params = m_clrEng->params();
+    params.V.min = minV;
+    m_clrEng->setParams(params);
     m_pGenClr->update();
 }
 

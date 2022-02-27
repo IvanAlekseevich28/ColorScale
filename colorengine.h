@@ -14,8 +14,8 @@ typedef double TFltNum;
 
 struct ClrEngParams
 {
-    MinMax S = MinMax(30,255,0);
-    MinMax V = MinMax(30,255,0);
+    MinMax S = MinMax(16,255,0);
+    MinMax V = MinMax(255,255,0);
     TIntNum specLen = 16;
     TIntNum maxValue = 0x8FFFFFFF;
 };

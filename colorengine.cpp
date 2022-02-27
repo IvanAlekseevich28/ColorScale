@@ -71,7 +71,7 @@ std::vector<QColor> ColorEngine::genSpec() const
         QColor clr = QColor::fromHsv(m_baseH,S,V);
         spec.push_back(clr);
         S += stepS;
-//        V -= stepV;
+        V -= stepV;
     }
 
     return spec;

@@ -13,7 +13,6 @@ SOURCES += \
     gencolor.cpp \
     main.cpp \
     mainwindow.cpp \
-    range.cpp \
     sliderparam.cpp
 
 HEADERS += \
@@ -21,7 +20,6 @@ HEADERS += \
     gencolor.h \
     mainwindow.h \
     minmax.h \
-    range.h \
     sliderparam.h
 
 # Default rules for deployment.
