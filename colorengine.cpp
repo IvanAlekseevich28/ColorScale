@@ -4,7 +4,7 @@
 
 
 #define MIN_HSL_SL 0
-#define MAX_HSL_SL 100
+#define MAX_HSL_SL 255
 
 #define VAL_k 1000
 #define VAL_M 1000000
@@ -17,7 +17,7 @@ namespace Draw
 
 ColorEngine::ColorEngine(TRGB rgb, ClrEngParams params)
 {
-    setParams(params);
+    setParams(params, true);
     setBaseColor(rgb);
 }
 
@@ -25,20 +25,20 @@ ColorEngine::ColorEngine(TRGB rgb, ClrEngParams params)
 void ColorEngine::setBaseColor(TRGB rgb)
 {
     QColor clr = int2Clr(rgb);
-    clr.getHsl(&m_baseH, &m_baseS, &m_baseL);
+    clr.getHsv(&m_baseH, &m_baseS, &m_baseV);
     recalcLogScale();
 }
 
 void ColorEngine::setBaseColor(QColor clr)
 {
-    clr.getHsl(&m_baseH, &m_baseS, &m_baseL);
+    clr.getHsv(&m_baseH, &m_baseS, &m_baseV);
     recalcLogScale();
 }
 
 QColor ColorEngine::getBaseColor() const
 {
     QColor clr;
-    clr.setHsl(m_baseH, m_baseS, m_baseL);
+    clr.setHsv(m_baseH, m_baseS, m_baseV);
     return clr;
 }
 
@@ -63,14 +63,15 @@ std::vector<QColor> ColorEngine::genSpec() const
 {
     std::vector<QColor> spec;
     int S(m_params.S.min);
-    int L(m_params.L.max);
-    const unsigned stepL = (m_params.L.max - m_params.L.min) / m_params.specLen;
+    int V(m_params.V.max);
+    const unsigned stepV = (m_params.V.max - m_params.V.min) / m_params.specLen;
     const unsigned stepS = (m_params.S.max - m_params.S.min) / m_params.specLen;
     for (unsigned i = 0; i < m_params.specLen; i++)
     {
-        QColor clr = QColor::fromHsl(m_baseH,S,L);
+        QColor clr = QColor::fromHsv(m_baseH,S,V);
         spec.push_back(clr);
-        S += stepS; L -= stepL;
+        S += stepS;
+//        V -= stepV;
     }
 
     return spec;
@@ -134,12 +135,13 @@ const std::map<TIntNum, QColor> &ColorEngine::logScale() const
     return m_logScale;
 }
 
-void ColorEngine::setParams(const ClrEngParams &newParams)
+void ColorEngine::setParams(const ClrEngParams &newParams, bool noCalc)
 {
     m_params = newParams;
-    m_params.L.cut(MIN_HSL_SL, MAX_HSL_SL);
+    m_params.V.cut(MIN_HSL_SL, MAX_HSL_SL);
     m_params.S.cut(MIN_HSL_SL, MAX_HSL_SL);
-    recalcLogScale();
+    if (noCalc == false)
+        recalcLogScale();
 }
 
 void ColorEngine::setS(MinMax newS)
@@ -148,10 +150,10 @@ void ColorEngine::setS(MinMax newS)
     m_params.S.cut(MIN_HSL_SL, MAX_HSL_SL);
 }
 
-void ColorEngine::setL(MinMax newL)
+void ColorEngine::setV(MinMax newV)
 {
-    m_params.L = newL;
-    m_params.L.cut(MIN_HSL_SL, MAX_HSL_SL);
+    m_params.V = newV;
+    m_params.V.cut(MIN_HSL_SL, MAX_HSL_SL);
 }
 
 }

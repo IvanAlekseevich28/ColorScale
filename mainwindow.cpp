@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     auto pLayoutRGB = new QHBoxLayout(this);
     auto pSlider_red    = new QSliderParam(this, "   Red:", MinMax(255), 0);
-    auto pSlider_green  = new QSliderParam(this, " Green:", MinMax(255), 34);
+    auto pSlider_green  = new QSliderParam(this, " Green:", MinMax(255), 0);
     auto pSlider_blue   = new QSliderParam(this, "  Blue:", MinMax(255), 255);
 
     connect(pSlider_red, SIGNAL(newValue(int)), this, SLOT(sliderChanged_red(int)));

@@ -14,10 +14,10 @@ typedef double TFltNum;
 
 struct ClrEngParams
 {
-    MinMax S = MinMax(30,100,0);
-    MinMax L = MinMax(30,100,0);
+    MinMax S = MinMax(30,255,0);
+    MinMax V = MinMax(30,255,0);
     TIntNum specLen = 16;
-    TIntNum maxValue = 0xFFFFFFF8;
+    TIntNum maxValue = 0x8FFFFFFF;
 };
 
 class ColorEngine
@@ -40,9 +40,9 @@ public:
 
     void setS(MinMax newS);
 
-    void setL(MinMax newL);
+    void setV(MinMax newV);
 
-    void setParams(const ClrEngParams &newParams);
+    void setParams(const ClrEngParams &newParams, bool noCalc = false);
 
     const std::map<TIntNum, QColor> &logScale() const;
 
@@ -59,7 +59,7 @@ private:
 private:
     int m_baseH;
     int m_baseS;
-    int m_baseL;
+    int m_baseV;
 
     ClrEngParams m_params;
 
