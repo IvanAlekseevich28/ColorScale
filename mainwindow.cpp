@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include <QLayout>
 #include <QGridLayout>
+#include "range.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -27,14 +28,17 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     auto pLayoutCount = new QHBoxLayout(this);
-    auto pSlider_pow    = new QSliderParam(this, "     Max 2 Power:", MinMax(8, 31), 31);
-    auto pSlider_len  = new QSliderParam(this, " Spectrum lenght:", MinMax(2, 32), 16);
+    auto pSlider_pow    = new QSliderParam(this, "     Max 2 Power:", MinMax(8, 31, 0), 31);
+    auto pSlider_len  = new QSliderParam(this, " Spectrum lenght:", MinMax(2, 32, 0), 16);
 
     connect(pSlider_pow, SIGNAL(newValue(int)), this, SLOT(sliderChanged_power2(int)));
     connect(pSlider_len, SIGNAL(newValue(int)), this, SLOT(sliderChanged_specLen(int)));
 
     pLayoutCount->addLayout(pSlider_pow);
     pLayoutCount->addLayout(pSlider_len);
+
+    // TODO
+    auto pLayoutSL = new QHBoxLayout(this);
 
     pLayoutMain->addLayout(pLayoutRGB);
     pLayoutMain->addLayout(pLayoutCount);
