@@ -27,6 +27,19 @@ void ColorEngine::setBaseColor(TRGB rgb)
     recalcLogScale();
 }
 
+void ColorEngine::setBaseColor(QColor clr)
+{
+    clr.getHsl(&m_baseH, &m_baseS, &m_baseL);
+    recalcLogScale();
+}
+
+QColor ColorEngine::getBaseColor() const
+{
+    QColor clr;
+    clr.setHsl(m_baseH, m_baseS, m_baseL);
+    return clr;
+}
+
 void ColorEngine::setSpecLen(const TIntNum &newSpecLen)
 {
     m_params.specLen = newSpecLen;

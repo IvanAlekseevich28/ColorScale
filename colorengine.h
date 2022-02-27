@@ -29,6 +29,9 @@ public:
     std::vector<QColor> genSpec()const;
 
     void setBaseColor(TRGB rgb);
+    void setBaseColor(QColor clr);
+
+    QColor getBaseColor()const;
 
     void setSpecLen(const TIntNum &newSpecLen);
 

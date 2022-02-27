@@ -12,12 +12,14 @@ SOURCES += \
     colorengine.cpp \
     gencolor.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    sliderparam.cpp
 
 HEADERS += \
     colorengine.h \
     gencolor.h \
-    mainwindow.h
+    mainwindow.h \
+    sliderparam.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

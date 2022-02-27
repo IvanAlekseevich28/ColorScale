@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "gencolor.h"
+#include "sliderparam.h"
 #include <memory>
 
 QT_BEGIN_NAMESPACE
@@ -17,8 +18,13 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void sliderChanged_red(int red);
+    void sliderChanged_green(int green);
+    void sliderChanged_blue(int blue);
+
 private:
-    std::unique_ptr<Draw::ColorEngine> m_clrEng;
+    std::shared_ptr<Draw::ColorEngine> m_clrEng;
     QGenColor* m_pGenClr;
 };
 #endif // MAINWINDOW_H

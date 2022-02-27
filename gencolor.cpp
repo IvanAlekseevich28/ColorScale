@@ -61,5 +61,5 @@ void QGenColor::drawOneLineWithText(const std::pair<Draw::TIntNum, QColor> &parC
     std::string strNum(Draw::ColorEngine::int2Str(parClr.first));
 
     p.setPen(Qt::white);
-    p.drawText(x, SCALE_HEIGHT, QString::fromStdString(strNum));
+    p.drawText(x, SCALE_HEIGHT-8, QString::fromStdString(strNum));
 }
