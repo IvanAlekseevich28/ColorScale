@@ -21,6 +21,16 @@ ColorEngine::ColorEngine(TRGB rgb, ClrEngParams params)
     setBaseColor(rgb);
 }
 
+QColor ColorEngine::getColorByValue(const TIntNum &value, const QColor& base) const
+{
+    if (value == 0)
+        return base;
+    if (value > m_logScale.rbegin()->first)
+        return m_logScale.rbegin()->second;
+
+    return m_logScale.lower_bound(value)->second;
+}
+
 
 void ColorEngine::setBaseColor(TRGB rgb)
 {

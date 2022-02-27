@@ -15,6 +15,8 @@ QSliderParam::QSliderParam(QWidget* parent, QString name, MinMax mm, int val)
 
     auto pValidator = new QIntValidator(mm.min, mm.max, parent);
     m_pLineEdit->setValidator(pValidator);
+//    m_pLineEdit->setHe
+    m_pLineEdit->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     connect(m_pSlider, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
     connect(m_pLineEdit, SIGNAL(textChanged(QString)), this, SLOT(valueChanged(QString)));

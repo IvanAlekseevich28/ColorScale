@@ -5,6 +5,8 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+    setWindowTitle("Color scale");
+
     Draw::ClrEngParams par;
     m_clrEng.reset(new Draw::ColorEngine(0xFF, par));
     m_pGenClr = new QGenColor(this, *m_clrEng);
@@ -27,8 +29,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     auto pLayoutCount = new QHBoxLayout(this);
-    auto pSlider_pow  = new QSliderParam(this, " Max 2 Power:", MinMax(8, 31, 0), 31);
-    auto pSlider_len  = new QSliderParam(this, " Spectrum lenght:", MinMax(2, 32, 0), 16);
+    auto pSlider_pow  = new QSliderParam(this, " Max 2 Power:", MinMax(8, 31), 31);
+    auto pSlider_len  = new QSliderParam(this, " Spectrum lenght:", MinMax(2, 32), 16);
 
     connect(pSlider_pow, SIGNAL(newValue(int)), this, SLOT(sliderChanged_power2(int)));
     connect(pSlider_len, SIGNAL(newValue(int)), this, SLOT(sliderChanged_specLen(int)));
@@ -38,8 +40,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     auto pLayoutSV = new QHBoxLayout(this);
-    auto pSlider_hsv_V_min = new QSliderParam(this, " HSV Value (min):", MinMax(64, 255, 0), 255);
-    auto pSlider_hsv_S_max = new QSliderParam(this, " HSV Saturation (max):", MinMax(16, 255, 0), 255);
+    auto pSlider_hsv_V_min = new QSliderParam(this, " HSV Value (min):", MinMax(64, 255), 255);
+    auto pSlider_hsv_S_max = new QSliderParam(this, " HSV Saturation (max):", MinMax(16, 255), 255);
 
     connect(pSlider_hsv_V_min, SIGNAL(newValue(int)), this, SLOT(sliderChanged_HSV_V_min(int)));
     connect(pSlider_hsv_S_max, SIGNAL(newValue(int)), this, SLOT(sliderChanged_HSV_S_max(int)));

@@ -14,8 +14,8 @@ typedef double TFltNum;
 
 struct ClrEngParams
 {
-    MinMax S = MinMax(16,255,0);
-    MinMax V = MinMax(255,255,0);
+    MinMax S = MinMax(16,255);
+    MinMax V = MinMax(255,255);
     TIntNum specLen = 16;
     TIntNum maxValue = 0x8FFFFFFF;
 };
@@ -25,8 +25,7 @@ class ColorEngine
 public:
     ColorEngine(TRGB rgb, ClrEngParams params = ClrEngParams());
 
-    inline QColor getColorByValue(const TIntNum &value)const
-        {return m_logScale.lower_bound(value)->second;}
+    QColor getColorByValue(const TIntNum &value, const QColor &base = Qt::white)const;
     std::vector<QColor> genSpec()const;
 
     void setBaseColor(TRGB rgb);
