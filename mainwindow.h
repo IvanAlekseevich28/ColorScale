@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QPushButton>
 #include "gencolor.h"
 #include "sliderparam.h"
 #include <memory>
@@ -29,8 +30,12 @@ private slots:
     void sliderChanged_HSV_S_max(int maxS);
     void sliderChanged_HSV_V_min(int minV);
 
+    void buttonRelease_ScaleMod();
+    void setButtonScaleModName();
+
 private:
     std::shared_ptr<Draw::ColorEngine> m_clrEng;
     QGenColor* m_pGenClr;
+    QPushButton* m_PBScaleMode;
 };
 #endif // MAINWINDOW_H

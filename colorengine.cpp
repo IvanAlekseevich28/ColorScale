@@ -21,14 +21,26 @@ ColorEngine::ColorEngine(TRGB rgb, ClrEngParams params)
     setBaseColor(rgb);
 }
 
-QColor ColorEngine::getColorByValue(const TIntNum &value, const QColor& base) const
+QColor ColorEngine::getColorByValue(const TIntNum &value, eScaleType eST, const QColor& base) const
 {
     if (value == 0)
         return base;
-    if (value > m_logScale.rbegin()->first)
-        return m_logScale.rbegin()->second;
+    const TScale *pScale(nullptr);
+    switch (eST)
+    {
+    case ST_log:
+        pScale = &m_logScale;
+        break;
+    case ST_pow2:
+        pScale = &m_pow2Scale;
+        break;
+    default:
+        pScale = &m_logScale;
+    }
+    if (value > pScale->rbegin()->first)
+        return pScale->rbegin()->second;
 
-    return m_logScale.lower_bound(value)->second;
+    return pScale->lower_bound(value)->second;
 }
 
 
@@ -36,13 +48,13 @@ void ColorEngine::setBaseColor(TRGB rgb)
 {
     QColor clr = int2Clr(rgb);
     clr.getHsv(&m_baseH, &m_baseS, &m_baseV);
-    recalcLogScale();
+    recalcScale();
 }
 
 void ColorEngine::setBaseColor(QColor clr)
 {
     clr.getHsv(&m_baseH, &m_baseS, &m_baseV);
-    recalcLogScale();
+    recalcScale();
 }
 
 QColor ColorEngine::getBaseColor() const
@@ -55,18 +67,20 @@ QColor ColorEngine::getBaseColor() const
 void ColorEngine::setSpecLen(const TIntNum &newSpecLen)
 {
     m_params.specLen = newSpecLen;
-    recalcLogScale();
+    recalcScale();
 }
 
 void ColorEngine::setMaxValue(const TIntNum &newMaxValue)
 {
     m_params.maxValue = newMaxValue;
-    recalcLogScale();
+    recalcScale();
 }
 
-void ColorEngine::recalcLogScale()
+void ColorEngine::recalcScale()
 {
+    m_colorSpectrum = genSpec();
     m_logScale = genLogScale();
+    m_pow2Scale = genPow2Scale();
 }
 
 std::vector<QColor> ColorEngine::genSpec() const
@@ -87,17 +101,25 @@ std::vector<QColor> ColorEngine::genSpec() const
     return spec;
 }
 
-std::map<TIntNum, QColor> ColorEngine::genLogScale() const
+TScale ColorEngine::genLogScale() const
 {
-    std::map<TIntNum, QColor> scale;
+    TScale scale;
 
     const TFltNum power = std::log(m_params.maxValue) / std::log(m_params.specLen);
-    auto spec = genSpec();
-    for (unsigned x = 0; x < spec.size(); x++)
+    for (unsigned x = 0; x < m_colorSpectrum.size(); x++)
     {
         TIntNum limit = pow(x, power);
-        scale.insert(std::make_pair(limit+1, spec[x]));
+        scale.insert(std::make_pair(limit+1, m_colorSpectrum[x]));
     }
+    return scale;
+}
+
+TScale ColorEngine::genPow2Scale() const
+{
+    TScale scale;
+    for (unsigned x = 0; x < m_params.specLen; x++)
+        scale.insert(std::make_pair((1 << x), m_colorSpectrum[x]));
+
     return scale;
 }
 
@@ -140,9 +162,17 @@ const ClrEngParams &ColorEngine::params() const
     return m_params;
 }
 
-const std::map<TIntNum, QColor> &ColorEngine::logScale() const
+const TScale ColorEngine::scale(eScaleType eST) const
 {
-    return m_logScale;
+    switch (eST)
+    {
+    case ST_log:
+        return m_logScale;
+    case ST_pow2:
+        return m_pow2Scale;
+    default:
+        return m_logScale;
+    }
 }
 
 void ColorEngine::setParams(const ClrEngParams &newParams, bool noCalc)
@@ -151,7 +181,7 @@ void ColorEngine::setParams(const ClrEngParams &newParams, bool noCalc)
     m_params.V.cut(MIN_HSL_SL, MAX_HSL_SL);
     m_params.S.cut(MIN_HSL_SL, MAX_HSL_SL);
     if (noCalc == false)
-        recalcLogScale();
+        recalcScale();
 }
 
 void ColorEngine::setS(MinMax newS)

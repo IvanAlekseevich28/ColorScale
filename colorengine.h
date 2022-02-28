@@ -11,6 +11,7 @@ namespace Draw
 typedef unsigned TRGB;
 typedef unsigned TIntNum;
 typedef double TFltNum;
+typedef std::map<TIntNum, QColor> TScale;
 
 struct ClrEngParams
 {
@@ -23,9 +24,16 @@ struct ClrEngParams
 class ColorEngine
 {
 public:
+    enum eScaleType
+    {
+        ST_log,
+        ST_pow2,
+
+        ST__End
+    };
     ColorEngine(TRGB rgb, ClrEngParams params = ClrEngParams());
 
-    QColor getColorByValue(const TIntNum &value, const QColor &base = Qt::white)const;
+    QColor getColorByValue(const TIntNum &value, eScaleType eST = ST_log, const QColor &base = Qt::white)const;
     std::vector<QColor> genSpec()const;
 
     void setBaseColor(TRGB rgb);
@@ -43,15 +51,16 @@ public:
 
     void setParams(const ClrEngParams &newParams, bool noCalc = false);
 
-    const std::map<TIntNum, QColor> &logScale() const;
+    const TScale scale(eScaleType eST = ST_log) const;
 
     const ClrEngParams &params() const;
 
     static std::string int2Str(TIntNum num);
 
 private:
-    void recalcLogScale();
-    std::map<TIntNum, QColor> genLogScale()const;
+    void recalcScale();
+    TScale genLogScale()const;
+    TScale genPow2Scale()const;
     static QColor int2Clr(TRGB rgb);
     static int correctSLvalues(int val);
 
@@ -61,7 +70,8 @@ private:
     int m_baseV;
 
     ClrEngParams m_params;
-
-    std::map<TIntNum, QColor> m_logScale;
+    std::vector<QColor> m_colorSpectrum;
+    TScale m_logScale;
+    TScale m_pow2Scale;
 };
 }

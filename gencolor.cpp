@@ -11,7 +11,7 @@
 #define SCALE_WIDTH 1024
 
 QGenColor::QGenColor(QWidget *parent, Draw::ColorEngine &eng) :
-    QOpenGLWidget(parent), m_eng(eng)
+    QOpenGLWidget(parent), m_eng(eng), m_eScaleType(Draw::ColorEngine::ST_log)
 {
     QOpenGLWidget::setFixedSize(SCALE_WIDTH, SCALE_HEIGHT);
     update();
@@ -31,7 +31,7 @@ void QGenColor::resizeGL(int nWidth, int nHeight)
 void QGenColor::paintGL()
 {
     unsigned i = 0;
-    for (const auto& pairClr : m_eng.logScale())
+    for (const auto& pairClr : m_eng.scale(m_eScaleType))
         drawOneLineWithText(pairClr, i++);
 }
 
@@ -51,7 +51,7 @@ void QGenColor::drawOneLineWithText(const std::pair<Draw::TIntNum, QColor> &parC
     p.setBrush(QBrush(parClr.second));
     const int w = oneClrPixLen();
     const int x = index*w;
-    const int numsH = 30;
+    const int numsH = 25;
     const int scaleH = SCALE_HEIGHT - numsH;
 
     p.drawRect(x, 0, w, scaleH);
@@ -65,4 +65,33 @@ unsigned QGenColor::oneClrPixLen() const
 {
     auto specLen = m_eng.params().specLen;
     return SCALE_WIDTH / specLen;
+}
+
+QString QGenColor::getModeName() const
+{
+    switch (m_eScaleType)
+    {
+    case Draw::ColorEngine::ST_log:
+        return "log";
+    case Draw::ColorEngine::ST_pow2:
+        return "pow2";
+    default:
+        return "unknown";
+    }
+}
+
+void QGenColor::scaleTypeSwithed()
+{
+    switch (m_eScaleType)
+    {
+    case Draw::ColorEngine::ST_log:
+        m_eScaleType = Draw::ColorEngine::ST_pow2;
+        break;
+    case Draw::ColorEngine::ST_pow2:
+        m_eScaleType = Draw::ColorEngine::ST_log;
+        break;
+    default:
+        m_eScaleType = Draw::ColorEngine::ST_log;
+    }
+    update();
 }

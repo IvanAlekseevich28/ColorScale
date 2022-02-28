@@ -8,18 +8,21 @@ class QGenColor : public QOpenGLWidget
     Q_OBJECT
 public:
     QGenColor(QWidget* parent, Draw::ColorEngine& eng);
-    std::vector<QColor> genSpec()const;
-    std::map<unsigned, QColor> genLogScale(const unsigned maxVal)const;
 
     unsigned oneClrPixLen() const;
+    QString getModeName()const;
+
+public slots:
+    void scaleTypeSwithed();
 
 protected:
     virtual void initializeGL();
     virtual void resizeGL(int nWidth, int nHeight);
     virtual void paintGL();
     void drawOneLine(const QColor& clr, const unsigned index);
-    void drawOneLineWithText(const std::pair<Draw::TIntNum, QColor>& parClr, const unsigned index);
+    void drawOneLineWithText(const std::pair<Draw::TIntNum, QColor> &parClr, const unsigned index);
 
 private:
     Draw::ColorEngine& m_eng;
+    Draw::ColorEngine::eScaleType m_eScaleType;
 };

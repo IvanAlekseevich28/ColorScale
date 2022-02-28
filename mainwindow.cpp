@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include <QLayout>
-#include <QGridLayout>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -31,12 +30,16 @@ MainWindow::MainWindow(QWidget *parent)
     auto pLayoutCount = new QHBoxLayout(this);
     auto pSlider_pow  = new QSliderParam(this, " Max 2 Power:", MinMax(8, 31), 31);
     auto pSlider_len  = new QSliderParam(this, " Spectrum lenght:", MinMax(2, 32), 16);
+    m_PBScaleMode = new QPushButton("Scale mode", this);
+    setButtonScaleModName();
 
     connect(pSlider_pow, SIGNAL(newValue(int)), this, SLOT(sliderChanged_power2(int)));
     connect(pSlider_len, SIGNAL(newValue(int)), this, SLOT(sliderChanged_specLen(int)));
+    connect(m_PBScaleMode, SIGNAL(released()), this, SLOT(buttonRelease_ScaleMod()));
 
     pLayoutCount->addLayout(pSlider_pow);
     pLayoutCount->addLayout(pSlider_len);
+    pLayoutCount->addWidget(m_PBScaleMode);
 
 
     auto pLayoutSV = new QHBoxLayout(this);
@@ -114,5 +117,17 @@ void MainWindow::sliderChanged_HSV_V_min(int minV)
     params.V.min = minV;
     m_clrEng->setParams(params);
     m_pGenClr->update();
+}
+
+void MainWindow::buttonRelease_ScaleMod()
+{
+    m_pGenClr->scaleTypeSwithed();
+    setButtonScaleModName();
+}
+
+void MainWindow::setButtonScaleModName()
+{
+    QString name = "Scale mod: " + m_pGenClr->getModeName();
+    m_PBScaleMode->setText(name);
 }
 
